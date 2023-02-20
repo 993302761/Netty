@@ -29,10 +29,10 @@ public class NettyCline {
 
             System.out.println("客户端已启动");
 
-            //启动客户端连接服务端
+            //绑定一个端口并且同步，涉及到netty的异步模型
             ChannelFuture sync = bootstrap.connect("127.0.0.1", 8888).sync();
 
-            //对关闭通道进行监听
+            //对关闭通道进行监听，如果缺少这段代码，则会直接进入finally，它会让线程进入wait状态
             sync.channel().closeFuture().sync();
         }finally {
 

@@ -12,6 +12,7 @@ public class NettyServer {
         // 创建BossGroup和WorkerGroup
         // BossGroup处理accept请求  WorkerGroup处理其他读写请求
         // 两者都是无限循环等待任务执行
+        // BossGroup和WorkerGroup的子线程的个数默认是（CPU核数*2）
         NioEventLoopGroup bossGroup=new NioEventLoopGroup();
         NioEventLoopGroup workerGroup=new NioEventLoopGroup();
 
@@ -46,10 +47,10 @@ public class NettyServer {
 
             ChannelFuture sync = null;
 
-            //绑定一个端口并且同步
+            //绑定一个端口并且同步，涉及到netty的异步模型
             sync = serverBootstrap.bind(8888).sync();
 
-            //对关闭通道进行监听
+            //对关闭通道进行监听，如果缺少这段代码，则会直接进入finally，它会让线程进入wait状态
             sync.channel().closeFuture().sync();
         }finally {
 
